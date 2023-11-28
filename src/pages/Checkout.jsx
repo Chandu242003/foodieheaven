@@ -14,13 +14,25 @@ const Checkout = () => {
   const [enterCity, setEnterCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
 
-  useEffect(() => {
-    getData();
-  },[] )
-  const getData= () =>{
-    axios.get(" http://localhost:3001")
+  const getData = () => {
+    axios.post('http://localhost:5000/register', { enterName,enterEmail,enterNumber,enterCountry,enterCity,postalCode })
+      .then((response) => {
+        const result = response.data;
+        if (result) {
+          alert("Data saved successfully");
+          setEnterCity('')
+          setEnterName('')
+          setEnterCountry('')
+          setEnterNumber('')
+          setPostalCode('')
+          setEnterEmail('')
+        }
+      })
+      .catch((error) => {
+        console.error("POST request error:", error);
+        alert("Something went wrong when saving data.");
+      });
   }
-
   const shippingInfo = [];
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
   const shippingCost = 30;
@@ -100,10 +112,8 @@ const Checkout = () => {
                     onChange={(e) => setPostalCode(e.target.value)}
                   />
                 </div>
-                <button type="submit" className="addTOCart__btn" onclick={getData}>
-                  Payment
-                </button>
               </form>
+              <button onClick={getData}>Submit</button>
             </Col>
 
             <Col lg="4" md="6">
